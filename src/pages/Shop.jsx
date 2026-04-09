@@ -79,8 +79,13 @@ export default function Shop() {
                   <div style={{
                     height: 120, background: prod.bg,
                     display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 52,
+                    overflow: 'hidden',
                   }}>
-                    {prod.emoji}
+                    {prod.image ? (
+                      <img src={prod.image} alt={prod.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    ) : (
+                      prod.emoji
+                    )}
                   </div>
 
                   {/* Info */}

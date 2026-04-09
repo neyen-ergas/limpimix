@@ -9,8 +9,9 @@ export default function AdminPanel() {
   const [session, setSession] = useState(null)
   const [editProd, setEditProd] = useState(null)
   const [showAdd, setShowAdd] = useState(false)
-  const [newProd, setNewProd] = useState({ name: '', description: '', price: '', stock: '', unit: '', emoji: '🧴' })
+  const [newProd, setNewProd] = useState({ name: '', description: '', price: '', stock: '', unit: '', emoji: '🧴', image: '' })
   const [saving, setSaving] = useState(false)
+  const [uploading, setUploading] = useState(false)
   const [toast, setToast] = useState(null)
   const navigate = useNavigate()
 
@@ -44,6 +45,45 @@ export default function AdminPanel() {
     setTimeout(() => setToast(null), 2500)
   }
 
+  async function uploadImage(file) {
+    if (!file) return null
+    try {
+      setUploading(true)
+      
+      // Local testing: convert to data URL
+      if (import.meta.env.MODE === 'development') {
+        return new Promise((resolve) => {
+          const reader = new FileReader()
+          reader.onload = (e) => {
+            showToast('✓ Imagen cargada (modo local)')
+            resolve(e.target.result)
+          }
+          reader.readAsDataURL(file)
+        })
+      }
+      
+      // Production: upload to Supabase Storage
+      const fileExt = file.name.split('.').pop()
+      const fileName = `${Date.now()}.${fileExt}`
+      const { data, error } = await supabase.storage
+        .from('product-images')
+        .upload(fileName, file)
+      
+      if (error) throw error
+      
+      const { data: urlData } = supabase.storage
+        .from('product-images')
+        .getPublicUrl(fileName)
+      
+      return urlData.publicUrl
+    } catch (err) {
+      showToast('Error al subir imagen: ' + err.message)
+      return null
+    } finally {
+      setUploading(false)
+    }
+  }
+
   async function handleLogout() {
     await supabase.auth.signOut()
   }
@@ -54,6 +94,13 @@ export default function AdminPanel() {
     if (!newProd.name || !newProd.price) { showToast('Nombre y precio son obligatorios'); return }
     setSaving(true)
     const c = PALETTE[products.length % PALETTE.length]
+    
+    let imageUrl = newProd.image
+    if (newProd.imageFile) {
+      imageUrl = await uploadImage(newProd.imageFile)
+      if (!imageUrl) { setSaving(false); return }
+    }
+    
     const { error } = await supabase.from('products').insert({
       name:        newProd.name,
       description: newProd.description,
@@ -61,12 +108,13 @@ export default function AdminPanel() {
       stock:       Number(newProd.stock) || 0,
       unit:        newProd.unit,
       emoji:       newProd.emoji,
+      image:       imageUrl,
       bg:          c.bg,
       col:         c.col,
     })
     if (error) showToast('Error al agregar: ' + error.message)
     else {
-      setNewProd({ name: '', description: '', price: '', stock: '', unit: '', emoji: '🧴' })
+      setNewProd({ name: '', description: '', price: '', stock: '', unit: '', emoji: '🧴', image: '' })
       setShowAdd(false)
       showToast('Producto agregado ✓')
       fetchProducts()
@@ -77,6 +125,13 @@ export default function AdminPanel() {
   async function handleSaveEdit() {
     if (!editProd.name || !editProd.price) { showToast('Nombre y precio son obligatorios'); return }
     setSaving(true)
+    
+    let imageUrl = editProd.image
+    if (editProd.imageFile) {
+      imageUrl = await uploadImage(editProd.imageFile)
+      if (!imageUrl) { setSaving(false); return }
+    }
+    
     const { error } = await supabase
       .from('products')
       .update({
@@ -86,6 +141,7 @@ export default function AdminPanel() {
         stock:       Number(editProd.stock),
         unit:        editProd.unit,
         emoji:       editProd.emoji,
+        image:       imageUrl,
         active:      editProd.active,
       })
       .eq('id', editProd.id)
@@ -272,7 +328,18 @@ function ProductForm({ data, onChange, onSave, onCancel, saving, isEdit }) {
       <input style={{ ...t.input, marginBottom: 14 }} value={data.unit} placeholder="Ej: 1L, 500ml, 1kg"
         onChange={e => onChange(p => ({ ...p, unit: e.target.value }))} />
 
-      <label style={t.label}>Ícono</label>
+      <label style={t.label}>Imagen</label>
+      <div style={{ display: 'flex', gap: 10, marginBottom: 14 }}>
+        <input type="file" accept="image/*" onChange={e => onChange(p => ({ ...p, imageFile: e.target.files[0] }))}
+          style={{ flex: 1, padding: '8px 12px', border: '1px solid #e2e8f0', borderRadius: 6, fontSize: 13 }} />
+      </div>
+      {data.imageFile && <p style={{ fontSize: 12, color: '#10b981', marginBottom: 14 }}>✓ Archivo seleccionado: {data.imageFile.name}</p>}
+      
+      <label style={t.label}>O pega una URL de imagen</label>
+      <input style={{ ...t.input, marginBottom: 14 }} value={data.image} placeholder="https://ejemplo.com/imagen.jpg"
+        onChange={e => onChange(p => ({ ...p, image: e.target.value }))} />
+
+      <label style={t.label}>Ícono (si no hay imagen)</label>
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 20 }}>
         {EMOJIS.map(em => (
           <button key={em} onClick={() => onChange(p => ({ ...p, emoji: em }))}
