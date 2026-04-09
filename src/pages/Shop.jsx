@@ -77,12 +77,12 @@ export default function Shop() {
                 <div key={prod.id} style={t.card}>
                   {/* Imagen / ícono */}
                   <div style={{
-                    height: 120, background: prod.bg,
+                    height: 140, background: prod.bg,
                     display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 52,
                     overflow: 'hidden',
                   }}>
                     {prod.image ? (
-                      <img src={prod.image} alt={prod.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      <img src={prod.image} alt={prod.name} style={{ width: '100%', height: '100%', objectFit: 'contain', padding: '8px' }} />
                     ) : (
                       prod.emoji
                     )}
