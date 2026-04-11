@@ -1,8 +1,10 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { supabase } from '../supabase'
 import { useCart } from '../CartContext'
 import Header from '../components/Header'
 import { t } from '../styles'
+
+const ALL = 'Todos'
 
 export default function Shop() {
   const [products, setProducts] = useState([])
@@ -10,6 +12,8 @@ export default function Shop() {
   const [error, setError] = useState(null)
   const [qtys, setQtys] = useState({})
   const [toast, setToast] = useState(null)
+  const [activeCategory, setActiveCategory] = useState(ALL)
+  const [search, setSearch] = useState('')
   const { addToCart, cart } = useCart()
 
   useEffect(() => { fetchProducts() }, [])
@@ -44,6 +48,21 @@ export default function Shop() {
     setQtys(prev => ({ ...prev, [id]: Math.max(1, val) }))
   }
 
+  // Categorías únicas extraídas de los productos
+  const categories = useMemo(() => {
+    const cats = [...new Set(products.map(p => p.category).filter(Boolean))]
+    return [ALL, ...cats.sort()]
+  }, [products])
+
+  const filtered = useMemo(() => {
+    return products.filter(p => {
+      const matchCat = activeCategory === ALL || p.category === activeCategory
+      const matchSearch = !search || p.name.toLowerCase().includes(search.toLowerCase()) ||
+        (p.description || '').toLowerCase().includes(search.toLowerCase())
+      return matchCat && matchSearch
+    })
+  }, [products, activeCategory, search])
+
   if (loading) return (
     <div style={{ ...t.page, ...t.center, flexDirection: 'column', gap: 12 }}>
       <div style={{ fontSize: 32 }}>🫧</div>
@@ -64,13 +83,42 @@ export default function Shop() {
         <h1 style={t.pageTitle}>Nuestros Productos</h1>
         <p style={t.pageSub}>Elegí lo que necesitás y comprá directo por WhatsApp</p>
 
-        {products.length === 0 ? (
+        {/* Buscador + filtros */}
+        <div style={{ marginBottom: 24 }}>
+          <input
+            style={{ ...t.input, marginBottom: 14, maxWidth: 360 }}
+            placeholder="🔍 Buscar producto..."
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+          />
+          {categories.length > 1 && (
+            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+              {categories.map(cat => (
+                <button
+                  key={cat}
+                  onClick={() => setActiveCategory(cat)}
+                  style={{
+                    padding: '6px 16px', borderRadius: 20, fontSize: 13, fontWeight: 500,
+                    cursor: 'pointer', border: 'none',
+                    background: activeCategory === cat ? '#5ba3c9' : '#f1f5f9',
+                    color: activeCategory === cat ? '#fff' : '#475569',
+                    transition: 'all 0.15s',
+                  }}
+                >
+                  {cat}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {filtered.length === 0 ? (
           <p style={{ color: '#94a3b8', textAlign: 'center', marginTop: 48 }}>
-            No hay productos disponibles en este momento.
+            No hay productos para esta búsqueda.
           </p>
         ) : (
           <div style={t.grid}>
-            {products.map(prod => {
+            {filtered.map(prod => {
               const qty = qtys[prod.id] || 1
               const inCart = cart[prod.id] || 0
               return (
@@ -79,12 +127,21 @@ export default function Shop() {
                   <div style={{
                     height: 140, background: prod.bg,
                     display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 52,
-                    overflow: 'hidden',
+                    overflow: 'hidden', position: 'relative',
                   }}>
                     {prod.image ? (
                       <img src={prod.image} alt={prod.name} style={{ width: '100%', height: '100%', objectFit: 'contain', padding: '8px' }} />
                     ) : (
                       prod.emoji
+                    )}
+                    {prod.category && (
+                      <span style={{
+                        position: 'absolute', top: 8, right: 8,
+                        background: 'rgba(255,255,255,0.85)', color: '#475569',
+                        fontSize: 11, fontWeight: 600, padding: '2px 8px', borderRadius: 20,
+                      }}>
+                        {prod.category}
+                      </span>
                     )}
                   </div>
 
@@ -113,21 +170,20 @@ export default function Shop() {
                     padding: '10px 16px 14px', borderTop: '1px solid #f1f5f9',
                     display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                   }}>
-                    {/* Qty selector */}
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                       <button
-                        style={{ width: 30, height: 30, border: '1px solid #e2e8f0', background: '#f8fafc', borderRadius: '50%', fontSize: 18, lineHeight: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#475569', fontWeight: 600 }}
+                        style={{ width: 30, height: 30, border: '1px solid #e2e8f0', background: '#f8fafc', borderRadius: '50%', fontSize: 18, lineHeight: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#475569', fontWeight: 600, cursor: 'pointer' }}
                         onClick={() => setQty(prod.id, qty - 1)}
                       >−</button>
                       <span style={{ fontSize: 15, fontWeight: 600, minWidth: 22, textAlign: 'center' }}>{qty}</span>
                       <button
-                        style={{ width: 30, height: 30, border: '1px solid #e2e8f0', background: '#f8fafc', borderRadius: '50%', fontSize: 18, lineHeight: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#475569', fontWeight: 600 }}
+                        style={{ width: 30, height: 30, border: '1px solid #e2e8f0', background: '#f8fafc', borderRadius: '50%', fontSize: 18, lineHeight: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#475569', fontWeight: 600, cursor: 'pointer' }}
                         onClick={() => setQty(prod.id, qty + 1)}
                       >+</button>
                     </div>
 
                     {prod.stock > 0
-                      ? <button style={{ background: '#10b981', border: 'none', color: '#fff', padding: '7px 15px', borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: 'pointer' }} onClick={() => handleAdd(prod)}>
+                      ? <button style={{ background: '#5ba3c9', border: 'none', color: '#fff', padding: '7px 15px', borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: 'pointer' }} onClick={() => handleAdd(prod)}>
                           Agregar
                         </button>
                       : <span style={{ background: '#f1f5f9', color: '#94a3b8', padding: '7px 15px', borderRadius: 8, fontSize: 13 }}>

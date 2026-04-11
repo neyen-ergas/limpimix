@@ -10,7 +10,7 @@ export default function Header({ products = [] }) {
   return (
     <header style={t.hdr}>
       <Link to="/" style={t.logo}>
-        <span style={t.logoAccent}>Limpi</span>Max
+        <span style={t.logoAccent}>H</span>&amp;<span style={t.logoAccent}>L</span>
       </Link>
 
       <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>

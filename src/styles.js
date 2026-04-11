@@ -12,12 +12,12 @@ export const t = {
     display: 'flex', alignItems: 'center', justifyContent: 'space-between',
     position: 'sticky', top: 0, zIndex: 50,
   },
-  logo: { fontSize: 20, fontWeight: 700, letterSpacing: '-0.5px', textDecoration: 'none', color: '#0f172a' },
-  logoAccent: { color: '#0ea5e9' },
+  logo: { fontSize: 22, fontWeight: 800, letterSpacing: '-0.5px', textDecoration: 'none', color: '#0f172a' },
+  logoAccent: { color: '#5ba3c9' },
 
   // Buttons
   btnPrimary: {
-    background: '#0ea5e9', color: '#fff', border: 'none',
+    background: '#5ba3c9', color: '#fff', border: 'none',
     padding: '8px 18px', borderRadius: 8, fontSize: 14, fontWeight: 600, cursor: 'pointer',
   },
   btnGhost: {
@@ -41,12 +41,12 @@ export const t = {
 
   // Cart button with badge
   cartBtn: {
-    background: '#0ea5e9', color: '#fff', border: 'none',
+    background: '#5ba3c9', color: '#fff', border: 'none',
     padding: '8px 16px', borderRadius: 8, fontSize: 14, fontWeight: 600,
     cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6,
   },
   cartBadge: {
-    background: '#fff', color: '#0ea5e9', borderRadius: '50%',
+    background: '#fff', color: '#5ba3c9', borderRadius: '50%',
     width: 20, height: 20, display: 'inline-flex', alignItems: 'center',
     justifyContent: 'center', fontSize: 11, fontWeight: 700,
   },

@@ -48,7 +48,7 @@ export default function AdminLogin() {
       }}>
         <div style={{ fontSize: 40, marginBottom: 14 }}>🔐</div>
         <h1 style={{ fontSize: 22, fontWeight: 700, marginBottom: 6 }}>Panel Administrativo</h1>
-        <p style={{ fontSize: 14, color: '#64748b', marginBottom: 28 }}>LimpiMax — Gestión de productos</p>
+        <p style={{ fontSize: 14, color: '#64748b', marginBottom: 28 }}>H&amp;L — Gestión de productos</p>
 
         <div style={{ textAlign: 'left' }}>
           <label style={t.label}>Email</label>
