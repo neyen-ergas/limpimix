@@ -2,8 +2,11 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../supabase'
 import { t } from '../styles'
+import { usePageTitle } from '../hooks/usePageTitle'
 
 export default function AdminLogin() {
+  usePageTitle('Admin Login — H&L')
+  
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)

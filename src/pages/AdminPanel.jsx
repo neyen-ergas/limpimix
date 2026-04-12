@@ -2,10 +2,13 @@ import { useState, useEffect, useMemo, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../supabase'
 import { t, EMOJIS, PALETTE } from '../styles'
+import { usePageTitle } from '../hooks/usePageTitle'
 
 const TABS = ['Productos', 'Dashboard']
 
 export default function AdminPanel() {
+  usePageTitle('Panel Admin — H&L')
+  
   const [tab, setTab] = useState('Productos')
   const [products, setProducts] = useState([])
   const [orders, setOrders] = useState([])

@@ -3,8 +3,11 @@ import { supabase } from '../supabase'
 import { useCart } from '../CartContext'
 import Header from '../components/Header'
 import { t } from '../styles'
+import { usePageTitle } from '../hooks/usePageTitle'
 
 export default function Shop() {
+  usePageTitle('H&L — Productos de Limpieza')
+  
   const [products, setProducts] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)

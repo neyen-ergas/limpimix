@@ -4,10 +4,13 @@ import { supabase } from '../supabase'
 import { useCart } from '../CartContext'
 import Header from '../components/Header'
 import { t } from '../styles'
+import { usePageTitle } from '../hooks/usePageTitle'
 
 const WA_NUMBER = '5491131384773'
 
 export default function Cart() {
+  usePageTitle('Tu Carrito — H&L')
+  
   const [products, setProducts] = useState([])
   const [loading, setLoading] = useState(true)
   const [checking, setChecking] = useState(false)
