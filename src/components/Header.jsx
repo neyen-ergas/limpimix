@@ -1,6 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { useCart } from '../CartContext'
 import { t } from '../styles'
+import Logo from './Logo'
 
 export default function Header() {
   const { cartCount } = useCart()
@@ -9,33 +10,8 @@ export default function Header() {
 
   return (
     <header style={t.hdr}>
-      <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: 12, textDecoration: 'none' }}>
-        {/* Logo SVG con forma de burbuja */}
-        <svg width="40" height="40" viewBox="0 0 200 200" style={{ flexShrink: 0 }}>
-          {/* Forma de gota/burbuja blanca con borde azul */}
-          <path 
-            d="M 30 80 Q 30 40 60 30 Q 100 20 140 30 Q 170 40 170 80 Q 170 120 150 150 Q 130 180 100 185 Q 70 180 50 150 Q 30 120 30 80 Z" 
-            fill="#ffffff"
-            stroke="#5ba3c9"
-            strokeWidth="8"
-          />
-          {/* Texto H&L en azul dentro de la burbuja */}
-          <text 
-            x="100" 
-            y="125" 
-            fontFamily="Arial, sans-serif" 
-            fontSize="60" 
-            fontWeight="800" 
-            textAnchor="middle" 
-            fill="#5ba3c9"
-          >
-            H&amp;L
-          </text>
-        </svg>
-        
-        <span style={t.logo}>
-          <span style={t.logoAccent}>H</span>&amp;<span style={t.logoAccent}>L</span>
-        </span>
+      <Link to="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
+        <Logo size={48} />
       </Link>
 
       <nav style={t.nav}>

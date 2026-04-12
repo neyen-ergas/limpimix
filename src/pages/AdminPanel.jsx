@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { supabase } from '../supabase'
 import { t, EMOJIS, PALETTE } from '../styles'
 import { usePageTitle } from '../hooks/usePageTitle'
+import Logo from '../components/Logo'
 
 const TABS = ['Productos', 'Dashboard']
 
@@ -149,30 +150,8 @@ export default function AdminPanel() {
   return (
     <div style={t.page}>
       <header style={t.hdr}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          {/* Logo SVG con forma de burbuja */}
-          <svg width="32" height="32" viewBox="0 0 200 200" style={{ flexShrink: 0 }}>
-            <path 
-              d="M 30 80 Q 30 40 60 30 Q 100 20 140 30 Q 170 40 170 80 Q 170 120 150 150 Q 130 180 100 185 Q 70 180 50 150 Q 30 120 30 80 Z" 
-              fill="#ffffff"
-              stroke="#5ba3c9"
-              strokeWidth="8"
-            />
-            <text 
-              x="100" 
-              y="125" 
-              fontFamily="Arial, sans-serif" 
-              fontSize="60" 
-              fontWeight="800" 
-              textAnchor="middle" 
-              fill="#5ba3c9"
-            >
-              H&amp;L
-            </text>
-          </svg>
-          <span style={{ fontSize: 18, fontWeight: 700, letterSpacing: '-0.5px' }}>
-            <span style={{ color: '#5ba3c9' }}>H</span>&amp;<span style={{ color: '#5ba3c9' }}>L</span>
-          </span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <Logo size={36} />
           <span style={{ background: '#f1f5f9', color: '#64748b', fontSize: 12, fontWeight: 500, padding: '2px 8px', borderRadius: 20 }}>Admin</span>
         </div>
         <div style={{ display: 'flex', gap: 8 }}>
