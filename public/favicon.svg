@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <!-- Fondo azul -->
+  <rect width="200" height="200" fill="#5ba3c9"/>
+  
+  <!-- Forma de gota/burbuja blanca -->
+  <path d="M 30 80 Q 30 40 60 30 Q 100 20 140 30 Q 170 40 170 80 Q 170 120 150 150 Q 130 180 100 185 Q 70 180 50 150 Q 30 120 30 80 Z" fill="#ffffff"/>
+  
+  <!-- Texto H&L en azul dentro de la burbuja -->
+  <text x="100" y="125" font-family="Arial, sans-serif" font-size="60" font-weight="800" text-anchor="middle" fill="#5ba3c9">H&amp;L</text>
+</svg>

@@ -150,6 +150,26 @@ export default function AdminPanel() {
     <div style={t.page}>
       <header style={t.hdr}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          {/* Logo SVG con forma de burbuja */}
+          <svg width="32" height="32" viewBox="0 0 200 200" style={{ flexShrink: 0 }}>
+            <path 
+              d="M 30 80 Q 30 40 60 30 Q 100 20 140 30 Q 170 40 170 80 Q 170 120 150 150 Q 130 180 100 185 Q 70 180 50 150 Q 30 120 30 80 Z" 
+              fill="#ffffff"
+              stroke="#5ba3c9"
+              strokeWidth="8"
+            />
+            <text 
+              x="100" 
+              y="125" 
+              fontFamily="Arial, sans-serif" 
+              fontSize="60" 
+              fontWeight="800" 
+              textAnchor="middle" 
+              fill="#5ba3c9"
+            >
+              H&amp;L
+            </text>
+          </svg>
           <span style={{ fontSize: 18, fontWeight: 700, letterSpacing: '-0.5px' }}>
             <span style={{ color: '#5ba3c9' }}>H</span>&amp;<span style={{ color: '#5ba3c9' }}>L</span>
           </span>
