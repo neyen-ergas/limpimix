@@ -13,7 +13,7 @@ export default function AdminPanel() {
   const [session, setSession] = useState(null)
   const [editProd, setEditProd] = useState(null)
   const [showAdd, setShowAdd] = useState(false)
-  const [newProd, setNewProd] = useState({ name: '', description: '', price: '', stock: '', unit: '', emoji: '🧴', image: '', category: '' })
+  const [newProd, setNewProd] = useState({ name: '', description: '', price: '', stock: '', unit: '', emoji: '🧴', image: '', category: '', brand: '' })
   const [saving, setSaving] = useState(false)
   const [uploading, setUploading] = useState(false)
   const [toast, setToast] = useState(null)
@@ -88,10 +88,11 @@ export default function AdminPanel() {
       price: Number(newProd.price), stock: Number(newProd.stock) || 0,
       unit: newProd.unit, emoji: newProd.emoji, image: imageUrl,
       bg: c.bg, col: c.col, category: newProd.category || null,
+      brand: newProd.brand || null,
     })
     if (error) showToast('Error al agregar: ' + error.message)
     else {
-      setNewProd({ name: '', description: '', price: '', stock: '', unit: '', emoji: '🧴', image: '', category: '' })
+      setNewProd({ name: '', description: '', price: '', stock: '', unit: '', emoji: '🧴', image: '', category: '', brand: '' })
       setShowAdd(false)
       showToast('Producto agregado ✓')
       fetchAll()
@@ -112,6 +113,7 @@ export default function AdminPanel() {
       price: Number(editProd.price), stock: Number(editProd.stock),
       unit: editProd.unit, emoji: editProd.emoji, image: imageUrl,
       active: editProd.active, category: editProd.category || null,
+      brand: editProd.brand || null,
     }).eq('id', editProd.id)
     if (error) showToast('Error al guardar: ' + error.message)
     else { setEditProd(null); showToast('Producto actualizado ✓'); fetchAll() }
@@ -229,7 +231,7 @@ function ProductsTab({ products, total, active, noStock, lowStock, onEdit, onDel
         <table style={t.table}>
           <thead>
             <tr>
-              {['Producto', 'Categoría', 'Precio', 'Stock', 'Unidad', 'Estado', 'Acciones'].map(h => (
+              {['Producto', 'Marca', 'Categoría', 'Precio', 'Stock', 'Unidad', 'Estado', 'Acciones'].map(h => (
                 <th key={h} style={t.th}>{h}</th>
               ))}
             </tr>
@@ -245,6 +247,9 @@ function ProductsTab({ products, total, active, noStock, lowStock, onEdit, onDel
                       <p style={{ fontSize: 12, color: '#94a3b8' }}>{prod.description}</p>
                     </div>
                   </div>
+                </td>
+                <td style={{ ...t.td, color: '#64748b' }}>
+                  {prod.brand || '—'}
                 </td>
                 <td style={{ ...t.td, color: '#64748b' }}>
                   {prod.category ? (
@@ -496,6 +501,10 @@ function ProductForm({ data, onChange, onSave, onCancel, saving, isEdit }) {
       <label style={t.label}>Categoría</label>
       <input style={{ ...t.input, marginBottom: 14 }} value={data.category || ''} placeholder="Ej: Limpieza, Desinfección, Hogar"
         onChange={e => onChange(p => ({ ...p, category: e.target.value }))} />
+
+      <label style={t.label}>Marca</label>
+      <input style={{ ...t.input, marginBottom: 14 }} value={data.brand || ''} placeholder="Ej: H&L, Premium, Limited"
+        onChange={e => onChange(p => ({ ...p, brand: e.target.value }))} />
 
       <div style={row}>
         <div style={half}>
